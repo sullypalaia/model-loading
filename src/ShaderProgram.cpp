@@ -12,10 +12,9 @@ using namespace std::string_literals;
 ShaderProgram::ShaderProgram(std::string vert_filename,
                              std::string frag_filename) {
   std::string cwd{std::filesystem::current_path()};
-
   m_vert_path = cwd + "/shaders/" + vert_filename;
   if (!frag_filename.empty())
-    *m_frag_path = cwd + "/shaders/" + frag_filename;
+    m_frag_path = cwd + "/shaders/" + frag_filename;
 }
 
 int ShaderProgram::init() {
@@ -53,8 +52,8 @@ int ShaderProgram::init() {
   glAttachShader(m_id, vert_shader);
   glDeleteShader(vert_shader);
 
-  if (m_frag_path) {
-    std::ifstream frag_in(*m_frag_path);
+  if (!m_frag_path.data()) {
+    std::ifstream frag_in(m_frag_path);
     if (!frag_in) {
       std::cerr << "failed to open " << m_frag_path << '\n';
       return 0;

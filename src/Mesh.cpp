@@ -28,8 +28,8 @@ int Mesh::init() {
 
   m_meshes.resize(scene->mNumMeshes);
 
-  int num_vertices;
-  int num_indices;
+  int num_vertices = 0;
+  int num_indices = 0;
 
   for (int i = 0; i < m_meshes.size(); ++i) {
     // add data for meshes
@@ -75,21 +75,28 @@ int Mesh::init() {
 
       if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS) {
         std::string p{path.data};
+        std::cout << "adding texture path " << p << '\n';
         if (p.substr(0, 2) == ".\\")
-          p = p.substr(2, p.size() - 2);
+          p = p.substr(2, p.size() - 1);
+
+        if (p[0] == '*') {
+          m_tex_paths.push_back(p);
+          tex_indices.push_back(i);
+          continue;
+        }
 
         std::string full_path =
             static_cast<std::string>(std::filesystem::current_path()) + "/" + p;
 
         tex_indices.push_back(i);
-        m_tex_paths[i] = full_path;
+        m_tex_paths.push_back(full_path);
       }
     }
   }
 
   // create the textures with the texture manager
   m_tex_manager = new TextureManager(m_tex_paths, tex_indices, GL_TEXTURE_2D);
-  if (!m_tex_manager->init()) {
+  if (!m_tex_manager->init(scene)) {
     std::cerr << "failed to create textures\n";
     return 0;
   }

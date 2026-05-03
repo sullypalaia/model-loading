@@ -21,5 +21,5 @@ private:
   unsigned int m_id;
 
   std::string m_vert_path;
-  std::string *m_frag_path;
+  std::string m_frag_path;
 };

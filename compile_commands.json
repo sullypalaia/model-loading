@@ -3,8 +3,11 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/glad.c"
@@ -17,8 +20,11 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/EBO.cpp"
@@ -31,8 +37,11 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/Mesh.cpp"
@@ -45,8 +54,11 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/ShaderProgram.cpp"
@@ -59,8 +71,45 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
+      "-o",
+      "bin/model-loading",
+      "src/TextureManager.cpp"
+    ],
+    "directory": "/home/sullypalaia/Projects/model-loading",
+    "file": "/home/sullypalaia/Projects/model-loading/src/TextureManager.cpp",
+    "output": "/home/sullypalaia/Projects/model-loading/bin/model-loading"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-g",
+      "-I",
+      "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
+      "-o",
+      "bin/model-loading",
+      "src/UBO.cpp"
+    ],
+    "directory": "/home/sullypalaia/Projects/model-loading",
+    "file": "/home/sullypalaia/Projects/model-loading/src/UBO.cpp",
+    "output": "/home/sullypalaia/Projects/model-loading/bin/model-loading"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-g",
+      "-I",
+      "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/VAO.cpp"
@@ -73,22 +122,11 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
-      "-o",
-      "bin/model-loading",
-      "src/VBO.cpp"
-    ],
-    "directory": "/home/sullypalaia/Projects/model-loading",
-    "file": "/home/sullypalaia/Projects/model-loading/src/VBO.cpp",
-    "output": "/home/sullypalaia/Projects/model-loading/bin/model-loading"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-c",
-      "-I",
-      "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/WindowManager.cpp"
@@ -101,8 +139,11 @@
     "arguments": [
       "/usr/bin/g++",
       "-c",
+      "-g",
       "-I",
       "include",
+      "-I/opt/assimp/include",
+      "-I/opt/assimp/build/include",
       "-o",
       "bin/model-loading",
       "src/main.cpp"

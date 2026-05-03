@@ -1,25 +1,26 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 #include <vector>
+
+#include "assimp/scene.h"
 
 class TextureManager {
 public:
   TextureManager(std::vector<std::string> paths, std::vector<int> indices,
                  unsigned int texture_type);
-  int init();
+  int init(const aiScene *scene);
 
-  void bind_texture(unsigned int id);
+  void bind_texture(int mat_index);
 
-  bool texture_exists(unsigned int id);
+  bool texture_exists(int mat_index);
 
   void destroy();
 
 private:
-  unsigned int *m_ids;
+  std::unordered_map<int, unsigned int> m_textures;
   std::vector<std::string> m_paths;
   std::vector<int> m_indices;
   unsigned int m_target;
-
-  inline static int tex_unit = 0;
 };
