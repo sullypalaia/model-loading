@@ -14,6 +14,9 @@ public:
 
   void destroy_window();
 
+  int m_width;
+  int m_height;
+
 private:
   GLFWwindow *m_window;
 
@@ -21,7 +24,7 @@ private:
                            int action, int mods);
   static void resize_callback(GLFWwindow *window, int width, int height);
 
-  int m_width;
-  int m_height;
+  void m_update_size(int width, int height);
+
   std::string m_name;
 };

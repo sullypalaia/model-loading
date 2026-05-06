@@ -42,5 +42,13 @@ void WindowManager::key_callback(GLFWwindow *window, int key, int scancode,
 }
 
 void WindowManager::resize_callback(GLFWwindow *window, int width, int height) {
+  WindowManager *window_ptr =
+      static_cast<WindowManager *>(glfwGetWindowUserPointer(window));
+  window_ptr->m_update_size(width, height);
+}
+
+void WindowManager::m_update_size(int width, int height) {
   glViewport(0, 0, width, height);
+  m_width = width;
+  m_height = height;
 }

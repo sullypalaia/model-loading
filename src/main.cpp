@@ -4,11 +4,20 @@
 #include "GLFW/glfw3.h"
 
 #include "Mesh.h"
+#include "UBO.h"
 #include "WindowManager.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
-void APIENTRY error_callback(GLenum source, GLenum type, GLuint id,
-                             GLenum severity, GLsizei length,
-                             const GLchar *message, const void *userParam) {
+struct Transform {
+  glm::mat4 projection;
+  glm::mat4 view;
+};
+
+void error_callback(GLenum source, GLenum type, GLuint id, GLenum severity,
+                    GLsizei length, const GLchar *message,
+                    const void *userParam) {
   if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
     return;
 
@@ -17,7 +26,7 @@ void APIENTRY error_callback(GLenum source, GLenum type, GLuint id,
 }
 
 void init(Mesh &mesh);
-void draw(Mesh &mesh);
+void draw(Mesh &mesh, WindowManager &window, UBO<Transform> &ubo);
 
 bool open_window = true;
 
@@ -42,11 +51,12 @@ int main() {
   glDebugMessageCallback(error_callback, nullptr);
 
   Mesh mesh("fallout-1-terminal/source/fallout_1_terminal.glb");
+  UBO<Transform> ubo;
 
   init(mesh);
 
   while (!glfwWindowShouldClose(window_manager.get_window())) {
-    draw(mesh);
+    draw(mesh, window_manager, ubo);
 
     glfwSwapBuffers(window_manager.get_window());
     glfwPollEvents();
@@ -58,15 +68,31 @@ int main() {
 }
 
 void init(Mesh &mesh) {
+
   if (!mesh.init()) {
     open_window = false;
     return;
   }
 }
 
-void draw(Mesh &mesh) {
+void draw(Mesh &mesh, WindowManager &window, UBO<Transform> &ubo) {
   constexpr GLfloat clear_color[]{0.2f, 0.8f, 0.8f, 1.0f};
   glClearBufferfv(GL_COLOR, 0, clear_color);
+
+  // create the uniform buffer
+  glm::mat4 proj = glm::perspective(glm::radians(45.0f),
+                                    static_cast<float>(window.m_width) /
+                                        static_cast<float>(window.m_height),
+                                    0.1f, 100.0f);
+
+  glm::mat4 view(1.0f);
+  view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+  Transform transform{proj, view};
+
+  ubo.bind();
+  ubo.update(0, sizeof(glm::mat4), glm::value_ptr(proj));
+  ubo.update(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
 
   mesh.draw();
 }

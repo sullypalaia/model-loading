@@ -6,7 +6,7 @@ layout (location = 2) in vec3 normal_in;
 
 out vec2 tex_coords;
 
-layout (std140) uniform camera_data {
+layout (std140, binding = 0) uniform camera_data {
     mat4 projection;
     mat4 view;
 };

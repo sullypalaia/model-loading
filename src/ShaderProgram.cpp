@@ -52,7 +52,7 @@ int ShaderProgram::init() {
   glAttachShader(m_id, vert_shader);
   glDeleteShader(vert_shader);
 
-  if (!m_frag_path.data()) {
+  if (m_frag_path.empty()) {
     std::ifstream frag_in(m_frag_path);
     if (!frag_in) {
       std::cerr << "failed to open " << m_frag_path << '\n';
