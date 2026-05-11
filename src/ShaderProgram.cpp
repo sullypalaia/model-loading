@@ -52,7 +52,7 @@ int ShaderProgram::init() {
   glAttachShader(m_id, vert_shader);
   glDeleteShader(vert_shader);
 
-  if (m_frag_path.empty()) {
+  if (!m_frag_path.empty()) {
     std::ifstream frag_in(m_frag_path);
     if (!frag_in) {
       std::cerr << "failed to open " << m_frag_path << '\n';
@@ -112,5 +112,7 @@ void ShaderProgram::add_varyings(GLsizei count, const GLchar *const *varyings,
 }
 
 void ShaderProgram::use() { glUseProgram(m_id); }
+
+GLuint &ShaderProgram::get_id() { return m_id; }
 
 void ShaderProgram::destroy() { glDeleteProgram(m_id); }

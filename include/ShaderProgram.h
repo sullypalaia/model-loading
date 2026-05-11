@@ -17,6 +17,8 @@ public:
 
   void use();
 
+  unsigned int &get_id();
+
 private:
   unsigned int m_id;
 

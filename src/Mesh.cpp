@@ -70,10 +70,12 @@ int Mesh::init() {
   for (int i = 0; i < scene->mNumMaterials; ++i) {
     const aiMaterial *mat = scene->mMaterials[i];
 
-    if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+    if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0 ||
+        mat->GetTextureCount(aiTextureType_EMISSIVE) > 0) {
       aiString path;
 
-      if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS) {
+      if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS ||
+          mat->GetTexture(aiTextureType_EMISSIVE, 0, &path) == AI_SUCCESS) {
         std::string p{path.data};
         std::cout << "adding texture path " << p << '\n';
         if (p.substr(0, 2) == ".\\")
@@ -92,6 +94,8 @@ int Mesh::init() {
         m_tex_paths.push_back(full_path);
       }
     }
+    if (mat->GetTextureCount(aiTextureType_BASE_COLOR) > 0)
+      std::cout << "bruh\n";
   }
 
   // create the textures with the texture manager
@@ -123,16 +127,24 @@ int Mesh::init() {
   return 1;
 }
 
+void Mesh::set_uniform_matrix(const char *name, glm::mat4 &mat) {
+  m_program.use();
+  glUniformMatrix4fv(glGetUniformLocation(m_program.get_id(), name), 1,
+                     GL_FALSE, glm::value_ptr(mat));
+}
+
 // draw each of the meshes
 void Mesh::draw() {
+  glFrontFace(GL_CCW);
+
   m_vao.bind();
-  m_program.use();
 
   for (int i = 0; i < m_meshes.size(); ++i) {
     int mat_index = m_meshes[i].mat_index;
     // bind the texture, if it exists
-    if (m_tex_manager->texture_exists(mat_index))
-      m_tex_manager->bind_texture(mat_index);
+
+    m_program.use();
+    m_tex_manager->bind_texture(mat_index);
 
     glDrawElementsBaseVertex(GL_TRIANGLES, m_meshes[i].num_indices,
                              GL_UNSIGNED_INT,

@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "EBO.h"
 #include "ShaderProgram.h"
 #include "TextureManager.h"
@@ -14,6 +17,8 @@ public:
   Mesh(const char *filename);
 
   int init();
+
+  void set_uniform_matrix(const char *name, glm::mat4 &mat);
 
   void draw();
 

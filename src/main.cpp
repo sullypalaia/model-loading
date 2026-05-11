@@ -39,7 +39,7 @@ int main() {
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
   // create the window
-  WindowManager window_manager(640, 480, "model loading");
+  WindowManager window_manager(1920, 1080, "model loading", 0.1, 1.0f);
   if (!window_manager.init()) {
     std::cerr << "window initialization failed\n";
     return -1;
@@ -50,7 +50,8 @@ int main() {
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
   glDebugMessageCallback(error_callback, nullptr);
 
-  Mesh mesh("fallout-1-terminal/source/fallout_1_terminal.glb");
+  // Mesh mesh("fallout-1-terminal/source/fallout_1_terminal.glb");
+  Mesh mesh("croissant.glb");
   UBO<Transform> ubo;
 
   init(mesh);
@@ -64,20 +65,37 @@ int main() {
 
   // clean up
   mesh.destroy();
+  ubo.destroy();
   window_manager.destroy_window();
 }
 
 void init(Mesh &mesh) {
+  // enable stuff
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   if (!mesh.init()) {
     open_window = false;
     return;
   }
+
+  // transform the model
+  float scale_factor = 10.0;
+
+  glm::mat4 model(1.0f);
+  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 1.0f));
+  model = glm::scale(model, glm::vec3(scale_factor));
+
+  mesh.set_uniform_matrix("model", model);
 }
 
 void draw(Mesh &mesh, WindowManager &window, UBO<Transform> &ubo) {
   constexpr GLfloat clear_color[]{0.2f, 0.8f, 0.8f, 1.0f};
   glClearBufferfv(GL_COLOR, 0, clear_color);
+
+  constexpr GLfloat clear_depth{1.0f};
+  glClearBufferfv(GL_DEPTH, 0, &clear_depth);
 
   // create the uniform buffer
   glm::mat4 proj = glm::perspective(glm::radians(45.0f),
@@ -85,14 +103,12 @@ void draw(Mesh &mesh, WindowManager &window, UBO<Transform> &ubo) {
                                         static_cast<float>(window.m_height),
                                     0.1f, 100.0f);
 
-  glm::mat4 view(1.0f);
-  view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-  Transform transform{proj, view};
+  window.m_update();
 
   ubo.bind();
   ubo.update(0, sizeof(glm::mat4), glm::value_ptr(proj));
-  ubo.update(sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+  ubo.update(sizeof(glm::mat4), sizeof(glm::mat4),
+             glm::value_ptr(window.m_view_mat));
 
   mesh.draw();
 }

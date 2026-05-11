@@ -11,8 +11,10 @@ layout (std140, binding = 0) uniform camera_data {
     mat4 view;
 };
 
+uniform mat4 model;
+
 void main() {
   tex_coords = tex_coords_in;
 
-  gl_Position = projection * view * vec4(pos_in, 1.0);
+  gl_Position = projection * view * model * vec4(pos_in, 1.0);
 }
